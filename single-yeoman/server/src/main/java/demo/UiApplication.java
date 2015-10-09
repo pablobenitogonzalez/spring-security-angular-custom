@@ -68,7 +68,7 @@ public class UiApplication {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http.httpBasic().and().authorizeRequests()
-					.antMatchers("/index.html", "/home.html", "/login.html", "/", "/styles/*.css", "/scripts/*.js").permitAll().anyRequest().authenticated()
+					.antMatchers("/", "/index.html", "/assets/**/*", "/scripts/*.js", "/styles/*.css").permitAll().anyRequest().authenticated()
 					.and().logout().permitAll().logoutRequestMatcher(new AntPathRequestMatcher("/api/logout")).logoutSuccessUrl("/api/info").invalidateHttpSession(true)
 					.and().csrf().csrfTokenRepository(csrfTokenRepository())
 					.and().addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);

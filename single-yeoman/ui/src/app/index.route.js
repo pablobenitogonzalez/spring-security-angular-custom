@@ -7,10 +7,10 @@
 
   function routeConfig($routeProvider, $httpProvider) {
     $routeProvider.when('/', {
-      templateUrl : 'home.html',
+      templateUrl : 'app/home/home.html',
       controller : 'home'
     }).when('/login', {
-      templateUrl : 'login.html',
+      templateUrl : 'app/navigation/login.html',
       controller : 'navigation'
     }).otherwise('/');
 
