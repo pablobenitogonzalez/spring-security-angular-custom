@@ -13,7 +13,6 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
@@ -39,14 +38,14 @@ public class UiApplication {
 	public Principal user(Principal user) {
 		return user;
 	}
-
+	/*
 	@RequestMapping("/api/logout")
 	public void logout() {}
 
 	@RequestMapping("/api/info")
-	public Map<String,Object> info(@RequestParam String action, @RequestParam String status) {
+	public Map<String,Object> info() {
 		Map<String,Object> model = new HashMap<>();
-		model.put(action, status);
+		model.put("info", "success");
 		model.put("timestamp", new Date());
 		return model;
 	}
@@ -58,7 +57,7 @@ public class UiApplication {
 		model.put("content", "Hello World");
 		return model;
 	}
-
+	*/
 	public static void main(String[] args) {
 		SpringApplication.run(UiApplication.class, args);
 	}
@@ -69,13 +68,10 @@ public class UiApplication {
 		@Override
 		protected void configure(HttpSecurity http) throws Exception {
 			http.httpBasic().and().authorizeRequests()
-					.antMatchers("/", "/index.html", "/assets/**/*", "/scripts/*.js", "/styles/*.css").permitAll()
-					.anyRequest().authenticated()
-					.and().logout().permitAll()
-					.logoutRequestMatcher(new AntPathRequestMatcher("/api/logout"))
-					.logoutSuccessUrl("/api/info?action=logout&status=success")
-					.and().csrf().csrfTokenRepository(csrfTokenRepository())
-					.and().addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
+					.antMatchers("/", "/index.html", "/assets/**/*", "/scripts/*.js", "/styles/*.css").permitAll().anyRequest()
+					.authenticated().and().csrf()
+					.csrfTokenRepository(csrfTokenRepository()).and()
+					.addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
 		}
 
 		private Filter csrfHeaderFilter() {
