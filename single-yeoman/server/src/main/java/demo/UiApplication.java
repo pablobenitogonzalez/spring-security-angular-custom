@@ -40,13 +40,10 @@ public class UiApplication {
 		return user;
 	}
 
-	@RequestMapping("/api/logout")
-	public void logout() {}
-
-	@RequestMapping("/api/info")
-	public Map<String,Object> info(@RequestParam String action, @RequestParam String status) {
+	@RequestMapping("/api/logout/success")
+	public Map<String,Object> logoutSuccess() {
 		Map<String,Object> model = new HashMap<>();
-		model.put(action, status);
+		model.put("logout", "success");
 		model.put("timestamp", new Date());
 		return model;
 	}
@@ -67,13 +64,12 @@ public class UiApplication {
 	@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 	protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		@Override
-		protected void configure(HttpSecurity http) throws Exception {
+		protected void configure(HttpSecurity http) throws Exception { // http.httpBasic() security
 			http.httpBasic().and().authorizeRequests()
 					.antMatchers("/", "/index.html", "/assets/**/*", "/scripts/*.js", "/styles/*.css").permitAll()
 					.anyRequest().authenticated()
-					.and().logout().permitAll()
-					.logoutRequestMatcher(new AntPathRequestMatcher("/api/logout"))
-					.logoutSuccessUrl("/api/info?action=logout&status=success")
+					.and().logout().logoutUrl("/api/logout")
+					.logoutSuccessUrl("/api/logout/success").permitAll()
 					.and().csrf().csrfTokenRepository(csrfTokenRepository())
 					.and().addFilterAfter(csrfHeaderFilter(), CsrfFilter.class);
 		}
