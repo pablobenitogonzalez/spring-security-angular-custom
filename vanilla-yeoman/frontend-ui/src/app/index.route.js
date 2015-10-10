@@ -5,7 +5,7 @@
     .module('ui')
     .config(routeConfig);
 
-  function routeConfig($routeProvider, $httpProvider) {
+  function routeConfig($routeProvider) {
     $routeProvider.when('/', {
       templateUrl : 'app/home/home.html',
       controller : 'home'
@@ -14,7 +14,6 @@
       controller : 'navigation'
     }).otherwise('/');
 
-    $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
   }
 
 })();

@@ -13,6 +13,7 @@ import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.springframework.web.util.WebUtils;
@@ -38,26 +39,31 @@ public class UiApplication {
 	public Principal user(Principal user) {
 		return user;
 	}
-	/*
-	@RequestMapping("/api/logout")
-	public void logout() {}
 
-	@RequestMapping("/api/info")
-	public Map<String,Object> info() {
+	@RequestMapping("/api/login")
+	public Map<String,Object> login() {
 		Map<String,Object> model = new HashMap<>();
-		model.put("info", "success");
+		model.put("login", "user and password is needed");
 		model.put("timestamp", new Date());
 		return model;
 	}
 
-	@RequestMapping("/api/resource")
-	public Map<String,Object> home() {
+	@RequestMapping("/api/login/success")
+	public Map<String,Object> loginSuccess() {
 		Map<String,Object> model = new HashMap<>();
-		model.put("id", UUID.randomUUID().toString());
-		model.put("content", "Hello World");
+		model.put("login", "success");
+		model.put("timestamp", new Date());
 		return model;
 	}
-	*/
+
+	@RequestMapping("/api/logout/success")
+	public Map<String,Object> logoutSuccess() {
+		Map<String,Object> model = new HashMap<>();
+		model.put("logout", "success");
+		model.put("timestamp", new Date());
+		return model;
+	}
+
 	public static void main(String[] args) {
 		SpringApplication.run(UiApplication.class, args);
 	}
@@ -66,8 +72,10 @@ public class UiApplication {
 	@Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 	protected static class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		@Override
-		protected void configure(HttpSecurity http) throws Exception {
-			http.httpBasic().and().authorizeRequests()
+		protected void configure(HttpSecurity http) throws Exception { // http.formLogin() security
+			http.formLogin().loginPage("/api/login").defaultSuccessUrl("/api/login/success").permitAll()
+					.and().logout().logoutUrl("/api/logout").logoutSuccessUrl("/api/logout/success").permitAll()
+					.and().authorizeRequests()
 					.antMatchers("/", "/index.html", "/assets/**/*", "/scripts/*.js", "/styles/*.css").permitAll().anyRequest()
 					.authenticated().and().csrf()
 					.csrfTokenRepository(csrfTokenRepository()).and()
@@ -80,11 +88,12 @@ public class UiApplication {
 				protected void doFilterInternal(HttpServletRequest request,
 												HttpServletResponse response, FilterChain filterChain)
 						throws ServletException, IOException {
-					CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class.getName());
+					CsrfToken csrf = (CsrfToken) request.getAttribute(CsrfToken.class
+							.getName());
 					if (csrf != null) {
 						Cookie cookie = WebUtils.getCookie(request, "XSRF-TOKEN");
 						String token = csrf.getToken();
-						if (cookie == null || token != null && !token.equals(cookie.getValue())) {
+						if (cookie==null || token!=null && !token.equals(cookie.getValue())) {
 							cookie = new Cookie("XSRF-TOKEN", token);
 							cookie.setPath("/");
 							response.addCookie(cookie);
