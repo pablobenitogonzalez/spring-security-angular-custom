@@ -1,0 +1,8 @@
+server:
+  port: 9999
+  contextPath: /uaa
+
+security:
+  sessions: if-required
+  user:
+    password: password
