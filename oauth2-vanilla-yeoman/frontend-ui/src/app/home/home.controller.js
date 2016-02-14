@@ -7,7 +7,7 @@
 
   /** @ngInject */
   function HomeController($scope, $http) {
-    $http.get('api/resource/hello').success(function(data) {
+    $http.get('resource/hello').success(function(data) {
       $scope.greeting = data;
     })
   }

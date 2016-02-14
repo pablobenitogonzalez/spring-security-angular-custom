@@ -1,2 +1,7 @@
 http://localhost:9999/uaa/oauth/authorize?response_type=code&client_id=acme&redirect_uri=http://example.com
+
 curl acme:acmesecret@localhost:9999/uaa/oauth/token -d grant_type=authorization_code -d client_id=acme -d redirect_uri=http://example.com -d code=KIgPNu
+
+curl -v localhost:8080/api/resource/hello
+
+curl -v localhost:8080/api/user

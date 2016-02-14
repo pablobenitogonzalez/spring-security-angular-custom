@@ -12,7 +12,7 @@
       return $route.current && route === $route.current.controller;
     };
 
-    $http.get('api/user').success(function(data) {
+    $http.get('user').success(function(data) {
       if (data.name) {
         $rootScope.authenticated = true;
       } else {
@@ -25,13 +25,21 @@
     $scope.credentials = {};
 
     $scope.logout = function() {
-      $http.post('/api/logout', {}).success(function() {
-        console.log("Logout succeeded")
+      $http.post('logout', {}).success(function() {
+        console.log("Logout succeeded");
         $rootScope.authenticated = false;
         $location.path("/");
       }).error(function(data) {
-        console.log("Logout failed")
+        console.log("Logout failed");
         $rootScope.authenticated = false;
+      });
+    }
+
+    $scope.login = function() {
+      $http.get('login').success(function() {
+        console.log("Login succeeded");
+      }).error(function() {
+        console.log("Login failed");
       });
     }
 
